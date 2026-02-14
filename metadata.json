@@ -1,0 +1,8 @@
+{
+  "name": "Healio - Premium Medical Care",
+  "description": "A sophisticated single-doctor healthcare platform featuring online consultations, clinic management, and AI-powered health tips.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
