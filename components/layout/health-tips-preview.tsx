@@ -5,18 +5,19 @@ import { ArrowRight, Clock, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { HEALTH_TIPS } from '../../constants';
 import Card from '../ui/card';
+import { theme } from '../theme';
 
 const HealthTipsPreview = () => {
   return (
-    <section className="py-24 bg-gray-50">
-      <div className="container mx-auto px-4 md:px-8">
+    <section className={`${theme.layout.sectionY} ${theme.colors.sectionMutedBackground}`}>
+      <div className={theme.layout.container}>
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
-            <h2 className="text-3xl lg:text-5xl font-bold text-emerald-950 mb-4">Daily Health Insights</h2>
-            <p className="text-gray-600">Proactive tips to keep you feeling your best every day.</p>
+            <h2 className={`${theme.typography.sectionTitle} ${theme.typography.sectionTitleOnLight} mb-4`}>Daily Health Insights</h2>
+            <p className={theme.typography.sectionSubtitle}>Proactive tips to keep you feeling your best every day.</p>
           </div>
           <Link to="/tips" className="flex items-center space-x-2 text-emerald-600 font-bold hover:text-emerald-700 transition-all group">
-            <span>View All Articles</span>
+            <span className="link-underline">View All Articles</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
           </Link>
         </div>
@@ -40,7 +41,7 @@ const HealthTipsPreview = () => {
                     {tip.summary}
                   </p>
                   <Link to={`/tips`} className="inline-flex items-center space-x-2 text-emerald-600 font-bold text-sm">
-                    <span>Read More</span>
+                    <span className="link-underline">Read More</span>
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>

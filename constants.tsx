@@ -92,6 +92,30 @@ export const REVIEWS: Review[] = [
     comment: 'Very efficient and clean clinic. The wait times were minimal and the staff was friendly.',
     date: '1 month ago',
     avatar: 'https://picsum.photos/seed/amanda/100/100'
+  },
+  {
+    id: 'r6',
+    author: 'Priya Nair',
+    rating: 5,
+    comment: 'I felt heard and respected throughout my treatment. The follow-up care plan was clear and easy to follow.',
+    date: '3 days ago',
+    avatar: 'https://picsum.photos/seed/priya/100/100'
+  },
+  {
+    id: 'r7',
+    author: 'Jonas Müller',
+    rating: 5,
+    comment: 'The clinic combines modern technology with a very human touch. Booking, reminders, and reports were all seamless.',
+    date: '2 months ago',
+    avatar: 'https://picsum.photos/seed/jonas/100/100'
+  },
+  {
+    id: 'r8',
+    author: 'Fatima Al-Hassan',
+    rating: 4,
+    comment: 'Clean facility, short waiting time, and a very calm environment. Perfect for patients who get anxious easily.',
+    date: '4 weeks ago',
+    avatar: 'https://picsum.photos/seed/fatima/100/100'
   }
 ];
 

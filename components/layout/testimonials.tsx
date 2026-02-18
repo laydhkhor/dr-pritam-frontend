@@ -4,20 +4,22 @@ import { Quote, Star } from "lucide-react";
 import { REVIEWS } from "../../constants";
 import Avatar from "../ui/avatar";
 import CarouselControls from "../ui/carousel-controls";
+import { theme } from "../theme";
 
 const Testimonials = () => {
   const [activeFilter, setActiveFilter] = useState<"all" | "5" | "4">("all");
   const [testimonialIdx, setTestimonialIdx] = useState(0);
   const [itemsVisible, setItemsVisible] = useState(1);
+  const swipeThreshold = 50; // px threshold to trigger a swipe
 
   // Handle responsive items count
   useEffect(() => {
     const handleResize = () => {
       setItemsVisible(
         window.innerWidth >= 1280
-          ? 5
+          ? 3
           : window.innerWidth >= 1024
-            ? 4
+            ? 2
             : window.innerWidth >= 768
               ? 2
               : 1,
@@ -36,6 +38,10 @@ const Testimonials = () => {
     return reviews;
   }, [activeFilter]);
 
+  const totalCount = REVIEWS.length;
+  const fiveStarCount = REVIEWS.filter((r) => r.rating === 5).length;
+  const fourStarCount = REVIEWS.filter((r) => r.rating === 4).length;
+
   const maxIdx = Math.max(0, filteredReviews.length - itemsVisible);
 
   // Reset index when filter changes
@@ -43,13 +49,21 @@ const Testimonials = () => {
     setTestimonialIdx(0);
   }, [activeFilter]);
 
+  const handlePrev = () => {
+    setTestimonialIdx((prev) => Math.max(prev - 1, 0));
+  };
+
+  const handleNext = () => {
+    setTestimonialIdx((prev) => Math.min(prev + 1, maxIdx));
+  };
+
   return (
-    <section className="py-24 bg-emerald-900 overflow-hidden relative">
-      <div className="container mx-auto px-4 md:px-8 relative z-10">
+    <section className={`${theme.layout.sectionY} ${theme.colors.sectionPrimaryBackground} overflow-hidden relative`}>
+      <div className={`${theme.layout.container} relative z-10`}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <Quote className="w-16 h-16 text-emerald-600/30 mx-auto mb-6" />
-            <h2 className="text-3xl lg:text-5xl font-bold text-white mb-8">
+            <h2 className={`${theme.typography.sectionTitle} ${theme.typography.sectionTitleOnDark} mb-8`}>
               What My Patients Say
             </h2>
 
@@ -57,9 +71,9 @@ const Testimonials = () => {
             <div className="flex items-center justify-center space-x-3 mb-10 overflow-x-auto scrollbar-hide py-2">
               <div className="flex items-center space-x-2 bg-white/5 border border-white/10 rounded-2xl p-1.5 backdrop-blur-sm">
                 {[
-                  { id: "all", label: "All Reviews" },
-                  { id: "5", label: "5 Stars Only" },
-                  { id: "4", label: "4 Stars Only" },
+                  { id: "all", label: `All (${totalCount})` },
+                  { id: "5", label: `5★ (${fiveStarCount})` },
+                  { id: "4", label: `4★ (${fourStarCount})` },
                 ].map((filter) => (
                   <button
                     key={filter.id}
@@ -89,6 +103,16 @@ const Testimonials = () => {
                     className="flex"
                   >
                     <motion.div
+                      drag="x"
+                      dragConstraints={{ left: 0, right: 0 }}
+                      dragElastic={0.2}
+                      onDragEnd={(_, info) => {
+                        if (info.offset.x < -swipeThreshold && testimonialIdx < maxIdx) {
+                          setTestimonialIdx((prev) => Math.min(prev + 1, maxIdx));
+                        } else if (info.offset.x > swipeThreshold && testimonialIdx > 0) {
+                          setTestimonialIdx((prev) => Math.max(prev - 1, 0));
+                        }
+                      }}
                       animate={{
                         x: `-${testimonialIdx * (100 / itemsVisible)}%`,
                       }}
@@ -97,7 +121,9 @@ const Testimonials = () => {
                         stiffness: 300,
                         damping: 30,
                       }}
-                      className="flex flex-nowrap gap-6 w-full"
+                      className={`flex flex-nowrap w-full cursor-grab active:cursor-grabbing ${
+                        itemsVisible > 1 ? "gap-6" : ""
+                      }`}
                     >
                       {filteredReviews.map((review) => (
                         <div
@@ -111,7 +137,12 @@ const Testimonials = () => {
                                 hover:bg-white/[0.15]
                                 transition-colors
                               "
-                          style={{ flex: `0 0 ${100 / itemsVisible}%` }}
+                          style={{
+                            flex:
+                              itemsVisible === 1
+                                ? "0 0 100%"
+                                : `0 0 ${100 / itemsVisible}%`,
+                          }}
                         >
                           <div>
                             <div className="flex items-center space-x-5 mb-6">
@@ -153,14 +184,10 @@ const Testimonials = () => {
               </AnimatePresence>
             </div>
 
-            {filteredReviews.length > itemsVisible && (
+            {filteredReviews.length > 0 && (
               <CarouselControls
-                onPrev={() =>
-                  setTestimonialIdx((prev) => Math.max(prev - 1, 0))
-                }
-                onNext={() =>
-                  setTestimonialIdx((prev) => Math.min(prev + 1, maxIdx))
-                }
+                onPrev={handlePrev}
+                onNext={handleNext}
                 currentIndex={testimonialIdx}
                 maxIndex={maxIdx}
                 className="mt-12"

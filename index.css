@@ -1,5 +1,47 @@
 /* src/index.css */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 html,
 body {
   overflow-x: hidden;
+}
+
+/* Opt-in green underline for selected links */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.1rem;
+  height: 2px;
+  background: linear-gradient(90deg, #059669, #10b981);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease-out;
+}
+
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Hide main page scrollbar but keep scrolling */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+html,
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;   /* Firefox */
 }

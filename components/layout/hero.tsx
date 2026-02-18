@@ -52,7 +52,7 @@ const CountUp = ({ end, duration = 2 }: { end: number; duration?: number }) => {
 const Hero = () => {
   return (
     <>
-      <section className="relative pt-10 pb-20 lg:pt-20 lg:pb-32 bg-gradient-to-br from-emerald-50 via-white to-sky-50 overflow-hidden">
+      <section className="relative pt-20 pb-20  mb-20 lg:mb-32 lg:pt-32 lg:pb-32 bg-gradient-to-br from-emerald-50 via-white to-sky-50 overflow-hidden">
         <div className="container mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div 
             initial={{ opacity: 0, x: -50 }} 

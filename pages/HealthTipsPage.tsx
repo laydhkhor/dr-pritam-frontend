@@ -1,20 +1,31 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, Calendar, Clock, ChevronRight, Share2 } from 'lucide-react';
+import { Search, Filter, Calendar, Clock, ChevronRight, ChevronLeft, Share2 } from 'lucide-react';
 import { HEALTH_TIPS } from '../constants';
 
 const HealthTipsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const categories = ['All', 'Wellness', 'Technology', 'Mental Health', 'Cardiology'];
+  const pageSize = 6;
 
   const filteredTips = HEALTH_TIPS.filter(tip => {
     const matchesSearch = tip.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || tip.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredTips.length / pageSize) || 1);
+  const clampedPage = Math.min(currentPage, totalPages);
+  const startIndex = (clampedPage - 1) * pageSize;
+  const paginatedTips = filteredTips.slice(startIndex, startIndex + pageSize);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory]);
 
   return (
     <div className="pb-24">
@@ -63,7 +74,7 @@ const HealthTipsPage = () => {
         <div className="container mx-auto px-4 md:px-8">
           {filteredTips.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-              {filteredTips.map((tip, idx) => (
+              {paginatedTips.map((tip, idx) => (
                 <motion.article 
                   key={tip.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -114,6 +125,56 @@ const HealthTipsPage = () => {
               </div>
               <h3 className="text-2xl font-bold text-gray-900">No Articles Found</h3>
               <p className="text-gray-500">Try adjusting your search terms or filters.</p>
+            </div>
+          )}
+
+          {filteredTips.length > 0 && (
+            <div className="mt-10 flex items-center justify-end space-x-4">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={clampedPage === 1}
+                className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
+                  clampedPage === 1
+                    ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                    : 'border-emerald-500 text-emerald-600 hover:bg-emerald-50'
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Previous</span>
+              </button>
+
+              <div className="flex items-center space-x-2">
+                {Array.from({ length: totalPages }).map((_, index) => {
+                  const page = index + 1;
+                  const isActive = page === clampedPage;
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-9 h-9 rounded-full text-xs font-bold flex items-center justify-center transition-all ${
+                        isActive
+                          ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200'
+                          : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={clampedPage === totalPages}
+                className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
+                  clampedPage === totalPages
+                    ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                    : 'border-emerald-500 text-emerald-600 hover:bg-emerald-50'
+                }`}
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
           )}
         </div>
